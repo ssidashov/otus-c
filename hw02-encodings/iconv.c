@@ -5,6 +5,8 @@
 #include <string.h>
 #include "utf8translator.h"
 #include "utf8t_cp1251.h"
+#include "utf8t_koi8r.h"
+#include "utf8t_iso-8859-5.h"
 
 void register_encodings();
 void print_usage(const char* app_name);
@@ -84,7 +86,7 @@ int main(int argc, char **argv) {
   char* specified_encoding_code = argv[1];
   bool call_result = utf8t_get_encoding_by_code(specified_encoding_code, &selected_encoding_id);
   if(!call_result) {
-    fprintf(stderr, "Cannot find encoding %s", specified_encoding_code);
+    fprintf(stderr, "Cannot find encoding %s\n", specified_encoding_code);
     show_avaliable_encodings();
     ret_val = 2;
     goto release_resources;
@@ -132,6 +134,8 @@ release_resources:
 
 void register_encodings() {
     utf8t_register_encoding(utf8t_encoding_get_cp1251());
+    utf8t_register_encoding(utf8t_encoding_get_koi8r());
+    utf8t_register_encoding(utf8t_encoding_get_iso8859_5());
 }
 
 void show_avaliable_encodings() {
@@ -143,7 +147,7 @@ void show_avaliable_encodings() {
   }
   printf("Avaliable encodings:\n");
   for(size_t i = 0; i < names_size; i++) {
-    printf("%s", names[i]);
+    printf("%s\n", names[i]);
   }
   utf8t_names_release(&names);
 }

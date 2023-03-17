@@ -19,11 +19,11 @@ static const uint16_t cp1251_unicode_codepoint_by_char_position[] = {
     0x044E, 0x044F,
 };
 
-size_t get_cp1251_char_size(uint8_t first_symbol) {
+static size_t get_cp1251_char_size(uint8_t first_symbol) {
   return sizeof(first_symbol);
 }
 
-bool translate_cp1251_char_to_unicode_codepoint(uint8_t *source_codepoint,
+static bool translate_cp1251_char_to_unicode_codepoint(uint8_t *source_codepoint,
                                                 size_t codepoint_size,
                                                 uint16_t *result_codepoint){
     if(codepoint_size != 1) {
@@ -44,7 +44,7 @@ static bool register_cp1251(encoding_entry_t* encoding_registry[]) {
   return true;
 }
 
-utf8t_encoding_descriptor_t UTF8T_CP1251_DESCRIPTOR = {.register_encoding_function = register_cp1251};
+static utf8t_encoding_descriptor_t UTF8T_CP1251_DESCRIPTOR = {.register_encoding_function = register_cp1251};
 
 utf8t_encoding_descriptor_t* utf8t_encoding_get_cp1251() {
     return &UTF8T_CP1251_DESCRIPTOR;
