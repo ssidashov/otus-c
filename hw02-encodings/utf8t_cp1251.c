@@ -23,29 +23,32 @@ static size_t get_cp1251_char_size(uint8_t first_symbol) {
   return sizeof(first_symbol);
 }
 
-static bool translate_cp1251_char_to_unicode_codepoint(uint8_t *source_codepoint,
-                                                size_t codepoint_size,
-                                                uint16_t *result_codepoint){
-    if(codepoint_size != 1) {
-        return false;
-    }
-    return utf8t_translate_by_onebyte_table(source_codepoint[0],
-            result_codepoint,
-            cp1251_unicode_codepoint_by_char_position);
+static bool
+translate_cp1251_char_to_unicode_codepoint(uint8_t *source_codepoint,
+                                           size_t codepoint_size,
+                                           uint16_t *result_codepoint) {
+  if (codepoint_size != 1) {
+    return false;
+  }
+  return utf8t_translate_by_onebyte_table(
+      source_codepoint[0], result_codepoint,
+      cp1251_unicode_codepoint_by_char_position);
 }
 
-static encoding_entry_t cp1251_encoding = {.id = UTF8T_CP1251_ENCODING_ID,
-                                          .code = "cp1251",
-                                          .get_codepoint_size_func = get_cp1251_char_size,
-                                          .translate_func = translate_cp1251_char_to_unicode_codepoint};
+static encoding_entry_t cp1251_encoding = {
+    .id = UTF8T_CP1251_ENCODING_ID,
+    .code = "cp1251",
+    .get_codepoint_size_func = get_cp1251_char_size,
+    .translate_func = translate_cp1251_char_to_unicode_codepoint};
 
-static bool register_cp1251(encoding_entry_t* encoding_registry[]) {
+static bool register_cp1251(encoding_entry_t *encoding_registry[]) {
   encoding_registry[UTF8T_CP1251_ENCODING_ID] = &cp1251_encoding;
   return true;
 }
 
-static utf8t_encoding_descriptor_t UTF8T_CP1251_DESCRIPTOR = {.register_encoding_function = register_cp1251};
+static utf8t_encoding_descriptor_t UTF8T_CP1251_DESCRIPTOR = {
+    .register_encoding_function = register_cp1251};
 
-utf8t_encoding_descriptor_t* utf8t_encoding_get_cp1251() {
-    return &UTF8T_CP1251_DESCRIPTOR;
+utf8t_encoding_descriptor_t *utf8t_encoding_get_cp1251() {
+  return &UTF8T_CP1251_DESCRIPTOR;
 }

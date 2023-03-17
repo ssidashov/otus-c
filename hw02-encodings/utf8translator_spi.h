@@ -23,5 +23,4 @@ struct utf8t_encoding_descriptor_t {
   utf8t_register_encoding_fn register_encoding_function;
 };
 
-
 #endif

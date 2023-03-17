@@ -25,8 +25,8 @@ static size_t get_koi8r_char_size(uint8_t first_symbol) {
 
 static bool
 translate_koi8r_char_to_unicode_codepoint(uint8_t *source_codepoint,
-                                           size_t codepoint_size,
-                                           uint16_t *result_codepoint) {
+                                          size_t codepoint_size,
+                                          uint16_t *result_codepoint) {
   if (codepoint_size != 1) {
     return false;
   }
