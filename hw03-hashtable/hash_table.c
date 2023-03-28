@@ -87,8 +87,7 @@ int recalc_table(hash_table *table) {
   if (new_entries == NULL) {
     return 2;
   }
-  memset(new_entries, 0,
-         sizeof(hash_table_entry *) * new_allocation_size);
+  memset(new_entries, 0, sizeof(hash_table_entry *) * new_allocation_size);
   table->entries = new_entries;
   table->allocated_size = new_allocation_size;
   for (size_t idx = 0; idx < old_allocation_size; idx++) {
