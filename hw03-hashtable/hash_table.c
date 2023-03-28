@@ -20,6 +20,9 @@ hash_table_entry deleted_entry;
 hash_table *hash_table_init(hash_table_hash_fn hash_function,
                             hash_table_key_equals_fn key_equals_function,
                             size_t initial_size) {
+  if (initial_size == 0) {
+    return NULL;
+  }
   hash_table *created_table = malloc(sizeof(hash_table));
   if (created_table == NULL)
     return NULL;
@@ -27,7 +30,7 @@ hash_table *hash_table_init(hash_table_hash_fn hash_function,
   created_table->allocated_size = initial_size;
   hash_table_entry **entry_array =
       malloc(sizeof(hash_table_entry *) * initial_size);
-  if (entry_array == NULL && initial_size != 0) {
+  if (entry_array == NULL) {
     free(created_table);
     return NULL;
   }
@@ -84,6 +87,8 @@ int recalc_table(hash_table *table) {
   if (new_entries == NULL) {
     return 2;
   }
+  memset(new_entries, 0,
+         sizeof(hash_table_entry *) * new_allocation_size);
   table->entries = new_entries;
   table->allocated_size = new_allocation_size;
   for (size_t idx = 0; idx < old_allocation_size; idx++) {
@@ -94,6 +99,7 @@ int recalc_table(hash_table *table) {
     if (founded_index < 0) {
       table->entries = old_entries;
       table->allocated_size = old_allocation_size;
+      free(new_entries);
       return 3;
     }
     table->entries[founded_index] = old_entries[idx];
@@ -117,11 +123,14 @@ int hash_table_put(hash_table *table, const void *key, size_t key_size,
   if (prev_entry == NULL || prev_entry == &deleted_entry) {
     void *key_copy = malloc(key_size);
     if (key_copy == NULL) {
+      free(value_copy);
       return -1;
     }
     memcpy(key_copy, key, key_size);
     hash_table_entry *entry = malloc(sizeof(hash_table_entry));
     if (entry == NULL) {
+      free(key_copy);
+      free(value_copy);
       return -1;
     }
     entry->key = key_copy;

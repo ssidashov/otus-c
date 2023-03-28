@@ -13,7 +13,7 @@
 
 #define BUFFER_SIZE 1000
 #define INITIAL_WORD_BUFFER_SIZE 100
-#define INITIAL_TABLE_SIZE 1000
+#define INITIAL_TABLE_SIZE 1
 
 #define HASH_SEED 42
 
@@ -55,35 +55,40 @@ bool word_equals(const void *key1, const void *key2) {
 int add_and_increment_word(const char *word) {
   size_t *count = hash_table_get(words_hash_table, word);
   if (count == NULL) {
-    count = malloc(sizeof(size_t));
-    if (count == NULL) {
-      return -1;
+    size_t count_val = 1;
+    int put_res = hash_table_put(words_hash_table, word,
+                                 (strlen(word) + 1) * sizeof(char), &count_val,
+                                 sizeof(size_t), NULL);
+    if (put_res != 0) {
+      return put_res;
     }
-    *count = 1;
   } else {
     (*count)++;
   }
-  hash_table_put(words_hash_table, word, (strlen(word) + 1) * sizeof(char),
-                 count, sizeof(size_t), NULL);
-  free(count);
   return 0;
 }
 
-void process_word(char *word, size_t counter) {
+int process_word(char *word, size_t counter) {
+  int ret_val = 0;
   char *normalized_string = str_normalize(word);
   if (normalized_string == NULL) {
     fprintf(stderr, "Cannot normalize word '%s'", word);
-    return;
+    ret_val = -1;
+    goto resources_release;
   }
   int increment_res = add_and_increment_word(normalized_string);
   if (increment_res != 0) {
     fprintf(stderr, "Cannot count word #%zu %s, code: %d", counter, word,
             increment_res);
+    ret_val = -2;
+    goto resources_release;
   };
+resources_release:
   free(normalized_string);
+  return ret_val;
 }
 
-int tokenize_by_words(FILE *infile, void (*word_processor_fn)(char *, size_t)) {
+int tokenize_by_words(FILE *infile, int (*word_processor_fn)(char *, size_t)) {
   int ret_val = 0;
   size_t bytes_read = 0;
   size_t bytes = 0;
@@ -100,7 +105,7 @@ int tokenize_by_words(FILE *infile, void (*word_processor_fn)(char *, size_t)) {
     bytes_read = fread(buf, sizeof(uint8_t), BUFFER_SIZE, infile);
     if (ferror(infile)) {
       perror("Error reading file");
-      ret_val = 1;
+      ret_val = -1;
       goto resources_release;
     }
     bytes += bytes_read;
@@ -121,7 +126,7 @@ int tokenize_by_words(FILE *infile, void (*word_processor_fn)(char *, size_t)) {
               realloc(current_word_buffer,
                       bytes_to_add_to_word * 2 + current_word_buffer_size + 1);
           if (new_current_word_buffer == NULL) {
-            ret_val = 0;
+            ret_val = -2;
             goto resources_release;
           }
           current_word_buffer = new_current_word_buffer;
@@ -137,7 +142,11 @@ int tokenize_by_words(FILE *infile, void (*word_processor_fn)(char *, size_t)) {
       if (current_word_size > 0) {
         current_word_buffer[current_word_size] = '\0';
         words++;
-        word_processor_fn(current_word_buffer, words);
+        int process_res = word_processor_fn(current_word_buffer, words);
+        if (process_res != 0) {
+          ret_val = -3;
+          goto resources_release;
+        }
       }
       buf_word_start_pos = buffer_index + 1;
       current_word_size = 0;
@@ -183,7 +192,7 @@ int main(int argc, char **argv) {
   words_hash_table =
       hash_table_init(word_hash, word_equals, INITIAL_TABLE_SIZE);
   if (words_hash_table == NULL) {
-    fprintf(stderr, "Error creating hash table");
+    fprintf(stderr, "Error creating hash table\n");
     ret_val = 3;
     goto release_resources;
   }

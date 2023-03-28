@@ -24,22 +24,34 @@ char *str_normalize(char *string) {
     wide_string[i] = towlower(wide_string[i]);
   }
   char *result_string = malloc(wstring_size);
+  if (result_string == NULL) {
+    goto release_resources;
+  }
   wcoper_res_code = wcstombs(result_string, wide_string, wstring_size);
   if (wcoper_res_code == -1) {
     perror("wcstombs");
-    free(result_string);
     goto release_resources;
   }
   ret_val = result_string;
 release_resources:
+  if (ret_val == NULL) {
+    free(result_string);
+  }
   free(wide_string);
   return ret_val;
 }
 
 #else
 
-#include <string.h>
+#include <malloc.h>
 
-char *str_normalize(char *string) { return strdup(string); }
+char *str_normalize(char *string) {
+  char *copy = malloc(sizeof(char) * strlen(string) + 1);
+  if (copy == NULL) {
+    return NULL;
+  }
+  strcpy(copy, string);
+  return copy;
+}
 
 #endif
