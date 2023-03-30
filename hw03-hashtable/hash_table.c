@@ -120,7 +120,7 @@ int hash_table_put(hash_table *table, const void *key, size_t key_size,
   memcpy(value_copy, value, value_size);
   hash_table_entry *prev_entry = table->entries[index];
   if (prev_entry == NULL || prev_entry == &deleted_entry) {
-    void *key_copy = malloc(key_size);
+      void *key_copy = malloc(key_size);
     if (key_copy == NULL) {
       free(value_copy);
       return -1;
@@ -148,6 +148,8 @@ int hash_table_put(hash_table *table, const void *key, size_t key_size,
   } else {
     if (prev_value != NULL) {
       *prev_value = prev_entry->value;
+    } else {
+      free(prev_entry->value);
     }
     prev_entry->value = value_copy;
   }
@@ -170,7 +172,7 @@ void hash_table_free(hash_table *table) {
     free(table);
     return;
   }
-  for (size_t i; i < table->allocated_size; i++) {
+  for (size_t i = 0; i < table->allocated_size; i++) {
     hash_table_entry *entry = table->entries[i];
     if (entry == NULL || entry == &deleted_entry) {
       continue;
