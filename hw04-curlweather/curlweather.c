@@ -87,15 +87,17 @@ int main(int argc, char **argv) {
   if (res != CURLE_OK) {
     printf("Cannot initialize curl, errcode %d\n", res);
   }
-  if (argc < 2) {
+  if (argc < 2 || (argc == 2 && ((strcmp("--help", argv[1]) == 0) ||
+                                 strcmp("-h", argv[1]) == 0))) {
     print_usage(argc == 1 ? argv[0] : CURLWEATHER_APP_NAME);
-    ret_val = -1;
+    ret_val = argc < 2 ? -1 : 0;
   } else if ((strcmp("--version", argv[1]) == 0) ||
              strcmp("-v", argv[1]) == 0) {
     print_version(argv[0]);
   } else if (argc > 2) {
     printf("Too many arguments\n");
     print_usage(argv[0]);
+    ret_val = -1;
   } else {
     ret_val = fetch_weather(argv[1]);
   }
