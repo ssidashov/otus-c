@@ -1,0 +1,30 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-Dgstwavsrc_EXPORTS",
+      "-I/home/slayer/projects/otus-c/hw05-gstreamer-wav/debug",
+      "-isystem",
+      "/usr/include/gstreamer-1.0",
+      "-isystem",
+      "/usr/include/glib-2.0",
+      "-isystem",
+      "/usr/lib/glib-2.0/include",
+      "-isystem",
+      "/usr/include/sysprof-4",
+      "-std=gnu11",
+      "-fPIC",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-pthread",
+      "-c",
+      "-o",
+      "CMakeFiles/gstwavsrc.dir/gstwavsrc.c.o",
+      "/home/slayer/projects/otus-c/hw05-gstreamer-wav/gstwavsrc.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw05-gstreamer-wav/debug",
+    "file": "/home/slayer/projects/otus-c/hw05-gstreamer-wav/gstwavsrc.c",
+    "output": "/home/slayer/projects/otus-c/hw05-gstreamer-wav/debug/CMakeFiles/gstwavsrc.dir/gstwavsrc.c.o"
+  }
+]
