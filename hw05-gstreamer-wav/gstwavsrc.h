@@ -20,31 +20,38 @@
 #ifndef _GST_WAVSRC_H_
 #define _GST_WAVSRC_H_
 
+#include "wav_file.h"
 #include <gst/base/gstbasesrc.h>
 
 G_BEGIN_DECLS
 
-#define GST_TYPE_WAVSRC   (gst_wavsrc_get_type())
-#define GST_WAVSRC(obj)   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_WAVSRC,GstWavSrc))
-#define GST_WAVSRC_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_WAVSRC,GstWavSrcClass))
-#define GST_IS_WAVSRC(obj)   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_WAVSRC))
-#define GST_IS_WAVSRC_CLASS(obj)   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_WAVSRC))
+#define GST_TYPE_WAVSRC (gst_wavsrc_get_type())
+#define GST_WAVSRC(obj)                                                        \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), GST_TYPE_WAVSRC, GstWavSrc))
+#define GST_WAVSRC_CLASS(klass)                                                \
+  (G_TYPE_CHECK_CLASS_CAST((klass), GST_TYPE_WAVSRC, GstWavSrcClass))
+#define GST_IS_WAVSRC(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), GST_TYPE_WAVSRC))
+#define GST_IS_WAVSRC_CLASS(obj)                                               \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), GST_TYPE_WAVSRC))
 
 typedef struct _GstWavSrc GstWavSrc;
 typedef struct _GstWavSrcClass GstWavSrcClass;
 
-struct _GstWavSrc
-{
+struct _GstWavSrc {
   GstBaseSrc base_wavsrc;
-
+  gchar *filename; /* filename */
+  gchar *uri;      /* caching the URI */
+  gint fd;         /* open file descriptor */
+  guint64 current_pos;
+  GstCaps *caps;
+  WavFile *wav;
 };
 
-struct _GstWavSrcClass
-{
+struct _GstWavSrcClass {
   GstBaseSrcClass base_wavsrc_class;
 };
 
-GType gst_wavsrc_get_type (void);
+GType gst_wavsrc_get_type(void);
 
 G_END_DECLS
 

@@ -11,7 +11,7 @@ find_package(PkgConfig)
 pkg_search_module(gstreamer REQUIRED IMPORTED_TARGET gstreamer-1.0>=1.4)
 pkg_search_module(gstreamer-base REQUIRED IMPORTED_TARGET gstreamer-base-1.0>=1.4)
 
-add_library(gstwavsrc SHARED gstwavsrc.h gstwavsrc.c)
+add_library(gstwavsrc SHARED gstwavsrc.h gstwavsrc.c wav_file.h wav_file.c)
 target_include_directories(gstwavsrc PUBLIC "${PROJECT_BINARY_DIR}")
 configure_file("${PROJECT_SOURCE_DIR}/version.h.in" "${PROJECT_BINARY_DIR}/version.h")
 
