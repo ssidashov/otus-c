@@ -22,19 +22,24 @@
  * The wavsrc element does WAV Homework stuff.
  *
  * <refsect2>
- * <title>Example launch line</title>
+ * <title>wavsrc location=test.wav</title>
  * |[
- * gst-launch-1.0 -v fakesrc ! wavsrc ! FIXME ! fakesink
+ * gst-launch-1.0 -v -m wavsrc location=test.wav !
+ * audio/x-raw,format=S16LE,channels=1,rate=48000 ! autoaudiosink
  * ]|
- * FIXME Describe what the pipeline does.
+ * Pipeline plays wav file on out device.
  * </refsect2>
  */
 
 #include <glib.h>
 #include <gst/audio/audio-format.h>
+#include <gst/gst.h>
+#include <gst/gstbuffer.h>
 #include <gst/gstcaps.h>
+#include <gst/gstformat.h>
 #include <gst/gstinfo.h>
 #include <gst/gstpad.h>
+#include <gst/gstquery.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -64,27 +69,11 @@ static void gst_wavsrc_dispose(GObject *object);
 static void gst_wavsrc_finalize(GObject *object);
 
 static GstCaps *gst_wavsrc_get_caps(GstBaseSrc *src, GstCaps *filter);
-static gboolean gst_wavsrc_negotiate(GstBaseSrc *src);
-static GstCaps *gst_wavsrc_fixate(GstBaseSrc *src, GstCaps *caps);
-static gboolean gst_wavsrc_set_caps(GstBaseSrc *src, GstCaps *caps);
-static gboolean gst_wavsrc_decide_allocation(GstBaseSrc *src, GstQuery *query);
 static gboolean gst_wavsrc_start(GstBaseSrc *src);
 static gboolean gst_wavsrc_stop(GstBaseSrc *src);
-static void gst_wavsrc_get_times(GstBaseSrc *src, GstBuffer *buffer,
-                                 GstClockTime *start, GstClockTime *end);
 static gboolean gst_wavsrc_get_size(GstBaseSrc *src, guint64 *size);
 static gboolean gst_wavsrc_is_seekable(GstBaseSrc *src);
-static gboolean gst_wavsrc_prepare_seek_segment(GstBaseSrc *src, GstEvent *seek,
-                                                GstSegment *segment);
-static gboolean gst_wavsrc_do_seek(GstBaseSrc *src, GstSegment *segment);
-static gboolean gst_wavsrc_unlock(GstBaseSrc *src);
-static gboolean gst_wavsrc_unlock_stop(GstBaseSrc *src);
 static gboolean gst_wavsrc_query(GstBaseSrc *src, GstQuery *query);
-static gboolean gst_wavsrc_event(GstBaseSrc *src, GstEvent *event);
-static GstFlowReturn gst_wavsrc_create(GstBaseSrc *src, guint64 offset,
-                                       guint size, GstBuffer **buf);
-static GstFlowReturn gst_wavsrc_alloc(GstBaseSrc *src, guint64 offset,
-                                      guint size, GstBuffer **buf);
 static GstFlowReturn gst_wavsrc_fill(GstBaseSrc *src, guint64 offset,
                                      guint size, GstBuffer *buf);
 
@@ -106,7 +95,7 @@ static GstStaticPadTemplate gst_wavsrc_src_template = GST_STATIC_PAD_TEMPLATE(
   GST_DEBUG_CATEGORY_INIT(gst_wavsrc_debug_category, "wavsrc", 0,              \
                           "wavsrc element");
 
-G_DEFINE_TYPE_WITH_CODE(GstWavSrc, gst_wavsrc, GST_TYPE_BASE_SRC, _do_init);
+G_DEFINE_TYPE_WITH_CODE(GstWavSrc, gst_wavsrc, GST_TYPE_BASE_SRC, _do_init)
 
 static void gst_wavsrc_class_init(GstWavSrcClass *klass) {
   GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
@@ -127,25 +116,11 @@ static void gst_wavsrc_class_init(GstWavSrcClass *klass) {
   gobject_class->dispose = gst_wavsrc_dispose;
   gobject_class->finalize = gst_wavsrc_finalize;
   base_src_class->get_caps = GST_DEBUG_FUNCPTR(gst_wavsrc_get_caps);
-  // base_src_class->negotiate = GST_DEBUG_FUNCPTR (gst_wavsrc_negotiate);
-  //  base_src_class->fixate = GST_DEBUG_FUNCPTR (gst_wavsrc_fixate);
-  //  base_src_class->set_caps = GST_DEBUG_FUNCPTR (gst_wavsrc_set_caps);
-  //  base_src_class->decide_allocation = GST_DEBUG_FUNCPTR
-  //  (gst_wavsrc_decide_allocation);
   base_src_class->start = GST_DEBUG_FUNCPTR(gst_wavsrc_start);
   base_src_class->stop = GST_DEBUG_FUNCPTR(gst_wavsrc_stop);
-  // base_src_class->get_times = GST_DEBUG_FUNCPTR (gst_wavsrc_get_times);
   base_src_class->get_size = GST_DEBUG_FUNCPTR(gst_wavsrc_get_size);
   base_src_class->is_seekable = GST_DEBUG_FUNCPTR(gst_wavsrc_is_seekable);
-  // base_src_class->prepare_seek_segment = GST_DEBUG_FUNCPTR
-  // (gst_wavsrc_prepare_seek_segment); base_src_class->do_seek =
-  // GST_DEBUG_FUNCPTR (gst_wavsrc_do_seek); base_src_class->unlock =
-  // GST_DEBUG_FUNCPTR (gst_wavsrc_unlock); base_src_class->unlock_stop =
-  // GST_DEBUG_FUNCPTR (gst_wavsrc_unlock_stop);
   base_src_class->query = GST_DEBUG_FUNCPTR(gst_wavsrc_query);
-  // base_src_class->event = GST_DEBUG_FUNCPTR (gst_wavsrc_event);
-  // base_src_class->create = GST_DEBUG_FUNCPTR (gst_wavsrc_create);
-  // base_src_class->alloc = GST_DEBUG_FUNCPTR (gst_wavsrc_alloc);
   base_src_class->fill = GST_DEBUG_FUNCPTR(gst_wavsrc_fill);
 
   g_object_class_install_property(
@@ -160,8 +135,8 @@ static void gst_wavsrc_init(GstWavSrc *wavsrc) {
   wavsrc->filename = NULL;
   wavsrc->uri = NULL;
   wavsrc->fd = 0;
-  wavsrc->current_pos = 0;
   wavsrc->caps = NULL;
+  wavsrc->duration = 0;
   gst_base_src_set_blocksize(GST_BASE_SRC(wavsrc), DEFAULT_BLOCKSIZE);
 }
 
@@ -201,6 +176,27 @@ wrong_state : {
   GST_OBJECT_UNLOCK(src);
   return FALSE;
 }
+}
+
+static gboolean gst_wavsrc_calculate_duration(GstWavSrc *wav) {
+  if (wav->wav == NULL) {
+    return FALSE;
+  }
+  if (wav->duration > 0) {
+    return TRUE;
+  }
+  gsize sample_rate_bps = wav_file_get_sample_rate(wav->wav);
+
+  if (wav_file_get_sample_rate(wav->wav) > 0) {
+    gsize length_samples = wav_file_get_length(wav->wav);
+    GST_INFO_OBJECT(wav, "Got datasize %" G_GUINT64_FORMAT, length_samples);
+    wav->duration =
+        gst_util_uint64_scale_ceil(length_samples, GST_SECOND, sample_rate_bps);
+    GST_INFO_OBJECT(wav, "Got duration (bps) %" GST_TIME_FORMAT,
+                    GST_TIME_ARGS(wav->duration));
+    return TRUE;
+  }
+  return FALSE;
 }
 
 void gst_wavsrc_set_property(GObject *object, guint property_id,
@@ -283,47 +279,64 @@ static GstCaps *gst_wavsrc_get_caps(GstBaseSrc *src, GstCaps *filter) {
         gst_caps_intersect_full(filter, current_caps, GST_CAPS_INTERSECT_FIRST);
     caps = intersection;
     if (current_caps != NULL && current_caps != wavsrc->caps) {
-        //gst_caps_unref(current_caps);
+      // gst_caps_unref(current_caps);
     }
   }
 
- return caps;
+  return caps;
 }
 
-/* decide on caps */
-static gboolean gst_wavsrc_negotiate(GstBaseSrc *src) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
+GstCaps *gst_wav_create_audio_caps(GstWavSrc *wavSrc) {
+  GstCaps *caps = NULL;
 
-  GST_DEBUG_OBJECT(wavsrc, "negotiate");
+  uint16_t format = wav_file_get_format(wavSrc->wav);
+  uint16_t bits_per_sample = wav_file_get_sample_size(wavSrc->wav) * 8;
+  uint16_t channel_count = wav_file_get_channel_count(wavSrc->wav);
+  uint32_t sample_rate = wav_file_get_sample_rate(wavSrc->wav);
+  uint16_t block_align = wav_file_get_block_align(wavSrc->wav);
 
-  return TRUE;
-}
+  if (format == WAV_FORMAT_PCM) { // ONLY PCM SUPPORTED
+    gint ba = block_align;
+    gint ch = channel_count;
+    gint wd, ws;
+    GstAudioFormat format;
 
-/* called if, in negotiation, caps need fixating */
-static GstCaps *gst_wavsrc_fixate(GstBaseSrc *src, GstCaps *caps) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
+    if (ba > (32 / 8) * ch) {
+      GST_WARNING("Invalid block align: %d > %d", ba, (32 / 8) * ch);
+      wd = GST_ROUND_UP_8(bits_per_sample);
+    } else if (ba != 0) {
+      wd = ba * 8 / ch;
+    } else {
+      wd = GST_ROUND_UP_8(bits_per_sample);
+    }
 
-  GST_DEBUG_OBJECT(wavsrc, "fixate");
+    if (bits_per_sample > 32) {
+      GST_WARNING("invalid depth (%d) of pcm audio, overwriting.",
+                  bits_per_sample);
+      bits_per_sample = wd;
+    }
 
-  return NULL;
-}
+    ws = wd;
 
-/* notify the subclass of new caps */
-static gboolean gst_wavsrc_set_caps(GstBaseSrc *src, GstCaps *caps) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
+    format = gst_audio_format_build_integer(wd != 8, G_LITTLE_ENDIAN, wd, ws);
+    if (format == GST_AUDIO_FORMAT_UNKNOWN) {
+      GST_WARNING("Unsupported raw audio format with width %d", wd);
+      return NULL;
+    }
 
-  GST_DEBUG_OBJECT(wavsrc, "set_caps");
+    caps = gst_caps_new_simple("audio/x-raw", "format", G_TYPE_STRING,
+                               gst_audio_format_to_string(format), "layout",
+                               G_TYPE_STRING, "interleaved", "channels",
+                               G_TYPE_INT, ch, NULL);
 
-  return TRUE;
-}
+  } else {
+    GST_WARNING("Unknown audio tag 0x%04x", format);
+    return NULL;
+  }
 
-/* setup allocation query */
-static gboolean gst_wavsrc_decide_allocation(GstBaseSrc *src, GstQuery *query) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "decide_allocation");
-
-  return TRUE;
+  gst_caps_set_simple(caps, "rate", G_TYPE_INT, sample_rate, "channels",
+                      G_TYPE_INT, channel_count, NULL);
+  return caps;
 }
 
 /* start and stop processing, ideal for opening/closing the resource */
@@ -332,22 +345,36 @@ static gboolean gst_wavsrc_start(GstBaseSrc *src) {
 
   GST_INFO_OBJECT(wavsrc, "STARTING WavSrc");
 
-  WavFile *wav = wav_file_new(wavsrc->filename);
-  if(wav == NULL) {
-      GST_ERROR_OBJECT(wavsrc, "Cannot open wav file");
-      return FALSE;
+  WavFile *wav = NULL;
+  int ret = wav_file_new(wavsrc->filename, &wav);
+  if (ret != 0) {
+    switch (ret) {
+    case WAV_FILE_ERRCODE_WRONG_FILENAME:
+      GST_ELEMENT_ERROR(wavsrc, RESOURCE, NOT_FOUND, (NULL),
+                        ("No such file \"%s\"", wavsrc->filename));
+      break;
+    case WAV_FILE_ERRCODE_FILE_FORMAT_ERROR:
+      GST_ELEMENT_ERROR(wavsrc, STREAM, FAILED, (NULL), ("Wav format error"));
+      break;
+    case WAV_FILE_ERRCODE_FILE_OPERATION_ERROR:
+      GST_ELEMENT_ERROR(wavsrc, RESOURCE, FAILED, (NULL),
+                        ("File operation error"));
+      break;
+    }
+    return FALSE;
   }
 
-  GST_INFO_OBJECT(wavsrc, "Wav file read, format: %u, bitrate: %d, channels: %u", wav_file_get_format(wav),
-                  wav_file_get_sample_rate(wav),
+  GST_INFO_OBJECT(wavsrc,
+                  "Wav file read, format: %u, bitrate: %d, channels: %u",
+                  wav_file_get_format(wav), wav_file_get_sample_rate(wav),
                   wav_file_get_channel_count(wav));
 
   wavsrc->wav = wav;
 
-  GstCaps *caps = gst_caps_new_simple("audio/x-raw", "format", G_TYPE_STRING,
-                                      GST_AUDIO_NE(S16), "rate", G_TYPE_INT,
-                                      wav_file_get_sample_rate(wav),
-                                      "channels", G_TYPE_INT, wav_file_get_channel_count(wav), NULL);
+  GstCaps *caps = gst_wav_create_audio_caps(wavsrc);
+  if (caps == NULL) {
+    return FALSE;
+  }
 
   wavsrc->caps = gst_caps_ref(caps);
 
@@ -369,20 +396,19 @@ static gboolean gst_wavsrc_stop(GstBaseSrc *src) {
   return TRUE;
 }
 
-/* given a buffer, return start and stop time when it should be pushed
- * out. The base class will sync on the clock using these times. */
-static void gst_wavsrc_get_times(GstBaseSrc *src, GstBuffer *buffer,
-                                 GstClockTime *start, GstClockTime *end) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "get_times");
-}
-
 /* get the total size of the resource in bytes */
 static gboolean gst_wavsrc_get_size(GstBaseSrc *src, guint64 *size) {
   GstWavSrc *wavsrc = GST_WAVSRC(src);
 
+  if (wavsrc->wav == NULL) {
+    return FALSE;
+  }
+
   GST_DEBUG_OBJECT(wavsrc, "get_size");
+
+  gsize the_size = wav_file_get_length(wavsrc->wav); // in samples
+  gsize sample_size = wav_file_get_sample_size(wavsrc->wav);
+  *size = (guint64)(the_size * sample_size);
 
   return TRUE;
 }
@@ -393,46 +419,7 @@ static gboolean gst_wavsrc_is_seekable(GstBaseSrc *src) {
 
   GST_DEBUG_OBJECT(wavsrc, "is_seekable");
 
-  return TRUE;
-}
-
-/* Prepare the segment on which to perform do_seek(), converting to the
- * current basesrc format. */
-static gboolean gst_wavsrc_prepare_seek_segment(GstBaseSrc *src, GstEvent *seek,
-                                                GstSegment *segment) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "prepare_seek_segment");
-
-  return TRUE;
-}
-
-/* notify subclasses of a seek */
-static gboolean gst_wavsrc_do_seek(GstBaseSrc *src, GstSegment *segment) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "do_seek");
-
-  return TRUE;
-}
-
-/* unlock any pending access to the resource. subclasses should unlock
- * any function ASAP. */
-static gboolean gst_wavsrc_unlock(GstBaseSrc *src) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "unlock");
-
-  return TRUE;
-}
-
-/* Clear any pending unlock request, as we succeeded in unlocking */
-static gboolean gst_wavsrc_unlock_stop(GstBaseSrc *src) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "unlock_stop");
-
-  return TRUE;
+  return FALSE;
 }
 
 /* notify subclasses of a query */
@@ -443,13 +430,36 @@ static gboolean gst_wavsrc_query(GstBaseSrc *src, GstQuery *query) {
 
   GST_DEBUG_OBJECT(wavsrc, "query %s",
                    gst_query_type_get_name(GST_QUERY_TYPE(query)));
-
   switch (GST_QUERY_TYPE(query)) {
   case GST_QUERY_URI:
     gst_query_set_uri(query, wavsrc->uri);
     ret = TRUE;
     break;
+  case GST_QUERY_DURATION: {
+    gint64 duration = 0;
+    GstFormat format;
 
+    gst_query_parse_duration(query, &format, NULL);
+
+    switch (format) {
+    case GST_FORMAT_BYTES: {
+      format = GST_FORMAT_BYTES;
+      duration = wav_file_get_length(wavsrc->wav);
+      break;
+    }
+    case GST_FORMAT_TIME:
+      if ((ret = gst_wavsrc_calculate_duration(wavsrc))) {
+        duration = wavsrc->duration;
+      }
+      break;
+    default:
+      ret = FALSE;
+      break;
+    }
+    if (ret)
+      gst_query_set_duration(query, format, duration);
+    break;
+  } break;
   default:
     ret = FALSE;
     break;
@@ -465,67 +475,47 @@ static gboolean gst_wavsrc_query(GstBaseSrc *src, GstQuery *query) {
   return TRUE;
 }
 
-/* notify subclasses of an event */
-static gboolean gst_wavsrc_event(GstBaseSrc *src, GstEvent *event) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "event");
-
-  return TRUE;
-}
-
-/* ask the subclass to create a buffer with offset and size, the default
- * implementation will call alloc and fill. */
-static GstFlowReturn gst_wavsrc_create(GstBaseSrc *src, guint64 offset,
-                                       guint size, GstBuffer **buf) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "create");
-
-  return GST_FLOW_OK;
-}
-
-/* ask the subclass to allocate an output buffer. The default implementation
- * will use the negotiated allocator. */
-static GstFlowReturn gst_wavsrc_alloc(GstBaseSrc *src, guint64 offset,
-                                      guint size, GstBuffer **buf) {
-  GstWavSrc *wavsrc = GST_WAVSRC(src);
-
-  GST_DEBUG_OBJECT(wavsrc, "alloc");
-
-  return GST_FLOW_OK;
-}
-
 /* ask the subclass to fill the buffer with data from offset and size */
 static GstFlowReturn gst_wavsrc_fill(GstBaseSrc *src, guint64 offset,
                                      guint size, GstBuffer *buf) {
   GstWavSrc *wavsrc = GST_WAVSRC(src);
+  GST_DEBUG_OBJECT(wavsrc, "fill");
   GstMapInfo info;
   guint8 *data;
   GST_DEBUG_OBJECT(wavsrc, "Fill, size: %u, offset: %lu", size, offset);
-  gst_buffer_map(buf, &info, GST_MAP_WRITE);
+  if (!gst_buffer_map(buf, &info, GST_MAP_WRITE)) {
+    GST_ERROR_OBJECT(wavsrc, "Cannot map GST buffer");
+    return GST_FLOW_ERROR;
+  }
   data = info.data;
   gsize sample_size = wav_file_get_sample_size(wavsrc->wav);
-  size_t read_size = wav_file_read_samples(wavsrc->wav, data, size / sample_size);
+  gssize read_size =
+      wav_file_read_samples(wavsrc->wav, data, size / sample_size);
   gst_buffer_unmap(buf, &info);
+  if (read_size < 0) {
+    GST_ELEMENT_ERROR(wavsrc, RESOURCE, READ, ("Error reading wav samples"),
+                      GST_ERROR_SYSTEM);
+    return GST_FLOW_ERROR;
+  }
 
   GST_BUFFER_OFFSET(buf) = offset;
   GST_BUFFER_OFFSET_END(buf) = offset + read_size;
 
-  if(wav_file_eof(wavsrc->wav)){
-      return GST_FLOW_EOS;
+  if (wav_file_eof(wavsrc->wav)) {
+    return GST_FLOW_EOS;
   }
-
-  GST_DEBUG_OBJECT(wavsrc, "fill");
 
   return GST_FLOW_OK;
 }
 
 /*** GSTURIHANDLER INTERFACE *************************************************/
 
-static GstURIType gst_wavsrc_uri_get_type(GType type) { return GST_URI_SRC; }
+static GstURIType gst_wavsrc_uri_get_type(__attribute__((unused)) GType type) {
+  return GST_URI_SRC;
+}
 
-static const gchar *const *gst_wavsrc_uri_get_protocols(GType type) {
+static const gchar *const *gst_wavsrc_uri_get_protocols(__attribute__((unused))
+                                                        GType type) {
   static const gchar *protocols[] = {"file", NULL};
 
   return protocols;
@@ -537,14 +527,14 @@ static gchar *gst_wavsrc_uri_get_uri(GstURIHandler *handler) {
   return g_strdup(src->uri);
 }
 
-static gboolean gst_wavsrc_uri_set_uri(GstURIHandler *handler,
-                                         const gchar *uri, GError **err) {
+static gboolean gst_wavsrc_uri_set_uri(GstURIHandler *handler, const gchar *uri,
+                                       GError **err) {
   gchar *location, *hostname = NULL;
   gboolean ret = FALSE;
   GstWavSrc *src = GST_WAVSRC(handler);
 
   if (strcmp(uri, "file://") == 0) {
-     gst_wavsrc_set_location(src, NULL);
+    gst_wavsrc_set_location(src, NULL);
     return TRUE;
   }
 
@@ -575,7 +565,9 @@ beach:
   return ret;
 }
 
-static void gst_wavsrc_uri_handler_init(gpointer g_iface, gpointer iface_data) {
+static void gst_wavsrc_uri_handler_init(gpointer g_iface,
+                                        __attribute__((unused))
+                                        gpointer iface_data) {
   GstURIHandlerInterface *iface = (GstURIHandlerInterface *)g_iface;
 
   iface->get_type = gst_wavsrc_uri_get_type;
@@ -586,7 +578,7 @@ static void gst_wavsrc_uri_handler_init(gpointer g_iface, gpointer iface_data) {
 
 static gboolean plugin_init(GstPlugin *plugin) {
 
-  /* FIXME Remember to set the rank if it's an element that is meant
+  /* Remember to set the rank if it's an element that is meant
      to be autoplugged by decodebin. */
   return gst_element_register(plugin, "wavsrc", GST_RANK_NONE, GST_TYPE_WAVSRC);
 }

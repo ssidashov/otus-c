@@ -7,23 +7,17 @@
 
 #include <glib/gstdio.h>
 
-#define WAV_RIFF_CHUNK_ID ((uint32_t)'FFIR')
-#define WAV_FORMAT_CHUNK_ID ((uint32_t)' tmf')
-#define WAV_FACT_CHUNK_ID ((uint32_t)'tcaf')
-#define WAV_DATA_CHUNK_ID ((uint32_t)'atad')
-#define WAV_WAVE_ID ((uint32_t)'EVAW')
+//Little endian header tags:
+#define WAV_RIFF_CHUNK_ID ((uint32_t)0x46464952)   //'FFIR' chars
+#define WAV_FORMAT_CHUNK_ID ((uint32_t)0x20746D66) //' tmf' chars
+#define WAV_FACT_CHUNK_ID ((uint32_t)0x74636166)   //'tcaf' chars
+#define WAV_DATA_CHUNK_ID ((uint32_t)0x61746164)   //'atad' chars
+#define WAV_WAVE_ID ((uint32_t)0x45564157)         //'EVAW' chars
 
 #define WAV_CHUNK_MASTER ((uint32_t)1)
 #define WAV_CHUNK_FORMAT ((uint32_t)2)
 #define WAV_CHUNK_FACT ((uint32_t)4)
 #define WAV_CHUNK_DATA ((uint32_t)8)
-
-#define WAV_FILE_ERRCODE_FILE_OPERATION_ERROR -1
-#define WAV_FILE_ERRCODE_FILE_FORMAT_ERROR -2
-#define WAV_FILE_ERRCODE_WRONG_FILENAME -3
-#define WAV_FILE_ERRCODE_WRONG_STATE -4
-#define WAV_FILE_ERRCODE_FORMAT_NOT_SUPPORTED -5
-#define WAV_FILE_ERRCODE_ILLEGAL_PARAMETER -6
 
 #pragma pack(push, 1)
 
@@ -90,19 +84,21 @@ typedef struct {
   WavDataChunk data_chunk;
 } WavFilePrivate;
 
-int wav_file_init_impl(WavFile *self, const gchar *filename);
-void wav_file_close_impl(WavFile *self);
-void wav_file_dispose(GObject *object);
-void wav_file_finalize(GObject *object);
-uint16_t wav_file_get_format_impl(WavFile *self);
-uint16_t wav_file_get_channel_count_impl(WavFile *self);
-gsize wav_file_get_sample_size_impl(WavFile *self);
-gssize wav_file_tell_impl(WavFile *self);
-gsize wav_file_get_length_impl(WavFile *self);
-gssize wav_file_seek_impl(WavFile *self, gssize offset, int origin);
-uint32_t wav_file_get_sample_rate_impl(WavFile *self);
-gssize wav_file_read_samples_impl(WavFile *self, void *buffer, gsize count);
-gboolean wav_file_eof_impl(WavFile *self);
+static int wav_file_init_impl(WavFile *self, const gchar *filename);
+static void wav_file_close_impl(WavFile *self);
+static void wav_file_dispose(GObject *object);
+static void wav_file_finalize(GObject *object);
+static uint16_t wav_file_get_format_impl(WavFile *self);
+static uint16_t wav_file_get_channel_count_impl(WavFile *self);
+static gsize wav_file_get_sample_size_impl(WavFile *self);
+static gssize wav_file_tell_impl(WavFile *self);
+static gsize wav_file_get_length_impl(WavFile *self);
+static gssize wav_file_seek_impl(WavFile *self, gssize offset, int origin);
+static uint32_t wav_file_get_sample_rate_impl(WavFile *self);
+static uint16_t wav_file_get_block_align_impl(WavFile *self);
+static gssize wav_file_read_samples_impl(WavFile *self, void *buffer,
+                                         gsize count);
+static gboolean wav_file_eof_impl(WavFile *self);
 
 G_DEFINE_TYPE_WITH_PRIVATE(WavFile, wav_file, G_TYPE_OBJECT)
 
@@ -121,37 +117,42 @@ static void wav_file_class_init(WavFileClass *self) {
   self->seek = wav_file_seek_impl;
   self->get_sample_rate = wav_file_get_sample_rate_impl;
   self->eof = wav_file_eof_impl;
+  self->get_block_align = wav_file_get_block_align_impl;
   gobject_class->dispose = wav_file_dispose;
   gobject_class->finalize = wav_file_finalize;
 }
 
 static void wav_file_init(__attribute__((unused)) WavFile *self) {
   g_debug("created wav file");
+  WavFilePrivate *priv = wav_file_get_instance_private(self);
+  priv->filename = NULL;
+  priv->file_handle = NULL;
+  priv->is_opened = false;
 }
 
-int wav_header_parse(WavFilePrivate *wavFileProps) {
+static int wav_header_parse(WavFilePrivate *wavFileProps) {
   gsize read_count;
 
   read_count = fread(&wavFileProps->riff_chunk, sizeof(WavChunkHeader), 1,
                      wavFileProps->file_handle);
   if (read_count != 1) {
-    g_error("Unexpected end of file while reading wav header");
+    g_warning("Unexpected end of file while reading wav header");
     return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
   }
 
   if (wavFileProps->riff_chunk.id != WAV_RIFF_CHUNK_ID) {
-    g_error("File is not a RIFF file");
+    g_warning("File is not a RIFF file");
     return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
   }
 
   read_count =
       fread(&wavFileProps->riff_chunk.wave_id, 4, 1, wavFileProps->file_handle);
   if (read_count != 1) {
-    g_error("Unexpected end of file while reading wav header");
+    g_warning("Unexpected end of file while reading wav header");
     return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
   }
   if (wavFileProps->riff_chunk.wave_id != WAV_WAVE_ID) {
-    g_error("File is not a WAV file");
+    g_warning("File is not a WAV file");
     return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
   }
 
@@ -163,7 +164,7 @@ int wav_header_parse(WavFilePrivate *wavFileProps) {
     read_count =
         fread(&header, sizeof(WavChunkHeader), 1, wavFileProps->file_handle);
     if (read_count != 1) {
-      g_error("Unexpected end of file while reading wav header");
+      g_warning("Unexpected end of file while reading wav header");
       return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
     }
 
@@ -175,15 +176,15 @@ int wav_header_parse(WavFilePrivate *wavFileProps) {
       read_count = fread(&wavFileProps->format_chunk.body, header.size, 1,
                          wavFileProps->file_handle);
       if (read_count != 1) {
-        g_error("Unexpected end of file while reading wav header");
+        g_warning("Unexpected end of file while reading wav header");
         return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
       }
       if (wavFileProps->format_chunk.body.format_tag != WAV_FORMAT_PCM &&
           wavFileProps->format_chunk.body.format_tag != WAV_FORMAT_IEEE_FLOAT &&
           wavFileProps->format_chunk.body.format_tag != WAV_FORMAT_ALAW &&
           wavFileProps->format_chunk.body.format_tag != WAV_FORMAT_MULAW) {
-        g_error("Unknow format in format tag: %#010x",
-                wavFileProps->format_chunk.body.format_tag);
+        g_warning("Unknow format in format tag: %#010x",
+                  wavFileProps->format_chunk.body.format_tag);
         return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
       }
       break;
@@ -194,7 +195,7 @@ int wav_header_parse(WavFilePrivate *wavFileProps) {
       read_count = fread(&wavFileProps->fact_chunk.body, header.size, 1,
                          wavFileProps->file_handle);
       if (read_count != 1) {
-        g_error("Unexpected end of file while reading wav header");
+        g_warning("Unexpected end of file while reading wav header");
         return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
       }
       break;
@@ -205,7 +206,7 @@ int wav_header_parse(WavFilePrivate *wavFileProps) {
       break;
     default:
       if (fseek(wavFileProps->file_handle, header.size, SEEK_CUR) < 0) {
-        g_error("seek failed, code %d: %s", errno, strerror(errno));
+        g_warning("seek failed, code %d: %s", errno, strerror(errno));
         return WAV_FILE_ERRCODE_FILE_OPERATION_ERROR;
       }
       break;
@@ -214,7 +215,7 @@ int wav_header_parse(WavFilePrivate *wavFileProps) {
   return 0;
 }
 
-int wav_file_init_impl(WavFile *self, const gchar *filename) {
+static int wav_file_init_impl(WavFile *self, const gchar *filename) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   if (filename == NULL) {
     return WAV_FILE_ERRCODE_WRONG_FILENAME;
@@ -226,8 +227,8 @@ int wav_file_init_impl(WavFile *self, const gchar *filename) {
 
   priv->file_handle = g_fopen(filename, "rb");
   if (priv->file_handle == NULL) {
-    g_error("Cannot open wav file %s, errno %d: %s", filename, errno,
-            strerror(errno));
+    g_warning("Cannot open wav file %s, errno %d: %s", filename, errno,
+              strerror(errno));
     return WAV_FILE_ERRCODE_FILE_OPERATION_ERROR;
   }
   priv->filename = g_strdup(filename);
@@ -235,24 +236,36 @@ int wav_file_init_impl(WavFile *self, const gchar *filename) {
   if (parse_error_code != 0) {
     return parse_error_code;
   }
+  if (priv->format_chunk.body.num_channels == 0) {
+    g_warning("Zero channels in the wav header");
+    return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
+  }
+  if (priv->format_chunk.body.block_align == 0) {
+    g_warning("Zero block align in the wav header");
+    return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
+  }
   priv->is_opened = true;
   return 0;
 }
 
-gssize wav_file_read_samples_impl(WavFile *self, void *buffer, gsize count) {
+static gssize wav_file_read_samples_impl(WavFile *self, void *buffer,
+                                         gsize count) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   gsize read_count;
   uint16_t n_channels = wav_file_get_channel_count_impl(self);
+  if (n_channels == 0) {
+    return WAV_FILE_ERRCODE_FILE_FORMAT_ERROR;
+  }
   gsize sample_size = wav_file_get_sample_size_impl(self);
   gsize len_remain;
 
   if (!priv->is_opened) {
-    g_error("Wav file was not opened");
+    g_warning("Wav file was not opened");
     return WAV_FILE_ERRCODE_WRONG_STATE;
   }
 
   if (priv->format_chunk.body.format_tag == WAV_FORMAT_EXTENSIBLE) {
-    g_error("Extensible format is not supported");
+    g_warning("Extensible format is not supported");
     return WAV_FILE_ERRCODE_FORMAT_NOT_SUPPORTED;
   }
   gssize pos = wav_file_tell_impl(self);
@@ -270,23 +283,24 @@ gssize wav_file_read_samples_impl(WavFile *self, void *buffer, gsize count) {
   read_count =
       fread(buffer, sample_size, n_channels * count, priv->file_handle);
   if (ferror(priv->file_handle)) {
-    g_error("Error reading samples from file %s - %d %s", priv->filename, errno,
-            strerror(errno));
+    g_warning("Error reading samples from file %s - %d %s", priv->filename,
+              errno, strerror(errno));
     return WAV_FILE_ERRCODE_FILE_OPERATION_ERROR;
   }
 
   return read_count / n_channels;
 }
 
-WavFile *wav_file_new(const gchar *filename) {
+int wav_file_new(const gchar *filename, WavFile **target) {
   WavFile *object = g_object_new(TYPE_WAV_FILE, NULL);
   WavFileClass *klass = WAV_FILE_GET_CLASS(object);
   int result = klass->init(object, filename);
   if (result != 0) {
     g_object_unref(object);
-    return NULL;
+    return result;
   }
-  return object;
+  *target = object;
+  return 0;
 }
 
 void wav_file_close(WavFile *self) {
@@ -338,7 +352,12 @@ gboolean wav_file_eof(WavFile *self) {
   return klass->eof(self);
 }
 
-void wav_file_close_impl(WavFile *self) {
+uint16_t wav_file_get_block_align(WavFile *self) {
+  WavFileClass *klass = WAV_FILE_GET_CLASS(self);
+  return klass->get_block_align(self);
+}
+
+static void wav_file_close_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   if (!priv->is_opened) {
     return;
@@ -348,56 +367,60 @@ void wav_file_close_impl(WavFile *self) {
 
   ret = fclose(priv->file_handle);
   if (ret != 0) {
-    g_error("Error closing file %s - %d %s", priv->filename, errno,
-            strerror(errno));
+    g_warning("Error closing file %s - %d %s", priv->filename, errno,
+              strerror(errno));
     return;
   }
 
   priv->is_opened = false;
 }
 
-uint16_t wav_file_get_channel_count_impl(WavFile *self) {
+static uint16_t wav_file_get_channel_count_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   return priv->format_chunk.body.num_channels;
 }
-gsize wav_file_get_sample_size_impl(WavFile *self) {
+
+static gsize wav_file_get_sample_size_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   return priv->format_chunk.body.block_align /
          priv->format_chunk.body.num_channels;
 }
-gssize wav_file_tell_impl(WavFile *self) {
+
+static gssize wav_file_tell_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   long pos = ftell(priv->file_handle);
 
   if (pos == -1L) {
-    g_error("Error telling file %s - %d %s", priv->filename, errno,
-            strerror(errno));
+    g_warning("Error telling file %s - %d %s", priv->filename, errno,
+              strerror(errno));
     return WAV_FILE_ERRCODE_FILE_OPERATION_ERROR;
   }
 
   g_assert(pos >= (long)priv->data_chunk.offset);
 
-  return (long)(((uint64_t)pos - priv->data_chunk.offset) /
-                (priv->format_chunk.body.block_align));
+  return (gssize)(((uint64_t)pos - priv->data_chunk.offset) /
+                  (priv->format_chunk.body.block_align));
 }
-gsize wav_file_get_length_impl(WavFile *self) {
+
+static gsize wav_file_get_length_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   return priv->data_chunk.header.size / (priv->format_chunk.body.block_align);
 }
-uint16_t wav_file_get_format_impl(WavFile *self) {
+
+static uint16_t wav_file_get_format_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   return priv->format_chunk.body.format_tag;
 }
 
-gssize wav_file_seek_impl(WavFile *self, gssize offset, int origin) {
+static gssize wav_file_seek_impl(WavFile *self, gssize offset, int origin) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   size_t length = wav_file_get_length_impl(self);
   int ret;
 
   if (origin == SEEK_CUR) {
     gssize tell_result = wav_file_tell_impl(self);
-    if(tell_result < 0) {
-        return tell_result;
+    if (tell_result < 0) {
+      return tell_result;
     }
     offset += (long)tell_result;
   } else if (origin == SEEK_END) {
@@ -407,7 +430,7 @@ gssize wav_file_seek_impl(WavFile *self, gssize offset, int origin) {
   if (offset >= 0) {
     offset *= priv->format_chunk.body.block_align;
   } else {
-    g_error("Invalid seek: %ld", offset);
+    g_warning("Invalid seek: %ld", offset);
     return WAV_FILE_ERRCODE_ILLEGAL_PARAMETER;
   }
 
@@ -415,20 +438,20 @@ gssize wav_file_seek_impl(WavFile *self, gssize offset, int origin) {
               SEEK_SET);
 
   if (ret != 0) {
-    g_error("Failed seeking file %s - %d %s", priv->filename, errno,
-            strerror(errno));
+    g_warning("Failed seeking file %s - %d %s", priv->filename, errno,
+              strerror(errno));
     return WAV_FILE_ERRCODE_FILE_OPERATION_ERROR;
   }
 
   return 0;
 }
 
-uint32_t wav_file_get_sample_rate_impl(WavFile *self) {
+static uint32_t wav_file_get_sample_rate_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   return priv->format_chunk.body.sample_rate;
 }
 
-gboolean wav_file_eof_impl(WavFile *self) {
+static gboolean wav_file_eof_impl(WavFile *self) {
   WavFilePrivate *priv = wav_file_get_instance_private(self);
   if (!priv->is_opened) {
     return true;
@@ -436,6 +459,11 @@ gboolean wav_file_eof_impl(WavFile *self) {
   return feof(priv->file_handle) ||
          ftell(priv->file_handle) ==
              (long)(priv->data_chunk.offset + priv->data_chunk.header.size);
+}
+
+static uint16_t wav_file_get_block_align_impl(WavFile *self) {
+  WavFilePrivate *priv = wav_file_get_instance_private(self);
+  return priv->format_chunk.body.block_align;
 }
 
 void wav_file_dispose(GObject *object) {
@@ -450,12 +478,13 @@ void wav_file_finalize(GObject *object) {
   /* clean up object here */
   WavFile *wavFile = WAV_FILE(object);
   WavFilePrivate *priv = wav_file_get_instance_private(wavFile);
+  g_info("Closing wav file %s", priv->filename);
 
   WavFileClass *klass = WAV_FILE_GET_CLASS(wavFile);
   klass->close(wavFile);
-
-  g_free(priv->filename);
-  priv->filename = NULL;
-
+  if (priv->filename != NULL) {
+    g_free(priv->filename);
+    priv->filename = NULL;
+  }
   G_OBJECT_CLASS(wav_file_parent_class)->finalize(object);
 }

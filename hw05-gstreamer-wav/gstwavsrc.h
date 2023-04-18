@@ -42,9 +42,10 @@ struct _GstWavSrc {
   gchar *filename; /* filename */
   gchar *uri;      /* caching the URI */
   gint fd;         /* open file descriptor */
-  guint64 current_pos;
   GstCaps *caps;
+  guint64 duration;
   WavFile *wav;
+  /* duration in time */
 };
 
 struct _GstWavSrcClass {
