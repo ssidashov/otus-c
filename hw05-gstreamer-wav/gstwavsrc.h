@@ -45,7 +45,6 @@ struct _GstWavSrc {
   GstCaps *caps;
   guint64 duration;
   WavFile *wav;
-  /* duration in time */
 };
 
 struct _GstWavSrcClass {
