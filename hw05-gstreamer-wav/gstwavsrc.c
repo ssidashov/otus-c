@@ -36,6 +36,7 @@
 #include <gst/gst.h>
 #include <gst/gstbuffer.h>
 #include <gst/gstcaps.h>
+#include <gst/gsterror.h>
 #include <gst/gstformat.h>
 #include <gst/gstinfo.h>
 #include <gst/gstpad.h>
@@ -460,6 +461,15 @@ static gboolean gst_wavsrc_query(GstBaseSrc *src, GstQuery *query) {
       gst_query_set_duration(query, format, duration);
     break;
   } break;
+  case GST_QUERY_SCHEDULING: {
+    /* a pushsrc can by default never operate in pull mode override
+     * if you want something different. */
+    gst_query_set_scheduling(query, GST_SCHEDULING_FLAG_SEQUENTIAL, 1, -1, 0);
+    gst_query_add_scheduling_mode(query, GST_PAD_MODE_PUSH);
+
+    ret = TRUE;
+    break;
+  }
   default:
     ret = FALSE;
     break;
@@ -483,17 +493,26 @@ static GstFlowReturn gst_wavsrc_fill(GstBaseSrc *src, guint64 offset,
   GstMapInfo info;
   guint8 *data;
   GST_DEBUG_OBJECT(wavsrc, "Fill, size: %u, offset: %lu", size, offset);
+
+  gsize sample_size = wav_file_get_sample_size(wavsrc->wav);
+  if (size < sample_size) {
+    GST_ELEMENT_ERROR(
+        wavsrc, STREAM, FORMAT,
+        ("Minimal buffer is %lu, but %u recieved", sample_size, size),
+        GST_ERROR_SYSTEM);
+    return GST_FLOW_ERROR;
+  }
   if (!gst_buffer_map(buf, &info, GST_MAP_WRITE)) {
-    GST_ERROR_OBJECT(wavsrc, "Cannot map GST buffer");
+    GST_ELEMENT_ERROR(wavsrc, RESOURCE, READ, ("Cannot map buffer for fill"),
+                      GST_ERROR_SYSTEM);
     return GST_FLOW_ERROR;
   }
   data = info.data;
-  gsize sample_size = wav_file_get_sample_size(wavsrc->wav);
   gssize read_size =
       wav_file_read_samples(wavsrc->wav, data, size / sample_size);
   gst_buffer_unmap(buf, &info);
   if (read_size < 0) {
-    GST_ELEMENT_ERROR(wavsrc, RESOURCE, READ, ("Error reading wav samples"),
+    GST_ELEMENT_ERROR(wavsrc, STREAM, FAILED, ("Error reading wav samples"),
                       GST_ERROR_SYSTEM);
     return GST_FLOW_ERROR;
   }
@@ -501,7 +520,7 @@ static GstFlowReturn gst_wavsrc_fill(GstBaseSrc *src, guint64 offset,
   GST_BUFFER_OFFSET(buf) = offset;
   GST_BUFFER_OFFSET_END(buf) = offset + read_size;
 
-  if (wav_file_eof(wavsrc->wav)) {
+  if (wav_file_eof(wavsrc->wav) && read_size == 0) {
     return GST_FLOW_EOS;
   }
 
