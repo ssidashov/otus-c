@@ -1,18 +1,18 @@
 # Библиотека для логгирования.
 
 Предназначена для логгирования сообщений с заданным уровнем важности (один из debug, info, warning, error) в файл или на консоль. Возможно задать несколько appender'ов (настроек для логгирования в файл или консоль). Каждый appender поддерживает следующие настройки:
-    - Формат сообщения
-    - Минимальный уровень важности
-    - Тип
+- Формат сообщения
+- Минимальный уровень важности
+- Тип
 Есть 2 типа appender'ов:
-    - file - вывод в файл
-    - stdout - вывод в stdout
+- file - вывод в файл
+- stdout - вывод в stdout
 Appender file также имеет обязательную опцию filename - имя файла для логгирования. Stdout имеет необязательную опция error_to_to_stderr - выводить ли ошибки ERROR в STDERR (по умолчанию в stdout).
     Логгирование осуществляется функциями:
-    - LOG4C_DEBUG
-    - LOG4C_INFO
-    - LOG4C_WARNING
-    - LOG4C_ERROR
+- LOG4C_DEBUG
+- LOG4C_INFO
+- LOG4C_WARNING
+- LOG4C_ERROR
 Для использования бибилиотеки необходимо ее проинициализировать и настроть. Это делается либо передачей аргументов командной строки в функцию
 
     int log4c_setup_cmdline(int argc, char **argv);
@@ -56,10 +56,10 @@ Appender file также имеет обязательную опцию filename
 Пример вывода лога:
 
     2023-05-05 13:44:27.869481 WARN  00007fba37fff6c0 /home/sergey/projects/otus-c/hw06-logging-lib/demoapp/demoapp.c:28 thread_func               Warning condition triggered, 1843993368
-    2023-05-05 13:44:27.869517 DEBUG 00007fba3dffb6c0 /home/sergey/projects/otus-c/hw06-logging-lib/demoapp/demoapp.c:23 thread_func                 Spinning...
+    2023-05-05 13:44:27.869517 DEBUG 00007fba3dffb6c0 /home/sergey/projects/otus-c/hw06-logging-lib/demoapp/demoapp.c:23 thread_func               Spinning...
     2023-05-05 13:44:27.869876 DEBUG 00007fba3effd6c0 /home/sergey/projects/otus-c/hw06-logging-lib/demoapp/demoapp.c:23 thread_func               Spinning...
     2023-05-05 13:44:27.869951 ERROR 00007fba3effd6c0 /home/sergey/projects/otus-c/hw06-logging-lib/demoapp/demoapp.c:31 thread_func               Error condition triggered, 1956297539
     #1  0x000056419d5fd4dc sp=0x00007fba3effce90 thread_func + 0x193
     #2  0x00007fba7717fbb5 sp=0x00007fba3effcee0 pthread_condattr_setpshared + 0x4e5
     #3  0x00007fba77201d90 sp=0x00007fba3effcf80 __clone + 0x120
-    2023-05-05 13:44:27.896565 INFO  00007fba770c4740 /home/sergey/p asdfrojects/otus-c/hw06-logging-lib/demoapp/demoapp.c:44 int_handler               TRIGGERED SHUTDOWN...
+    2023-05-05 13:44:27.896565 INFO  00007fba770c4740 /home/sergey/p asdfrojects/otus-c/hw06-logging-lib/demoapp/demoapp.c:44 int_handler          TRIGGERED SHUTDOWN...
