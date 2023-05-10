@@ -163,9 +163,7 @@ adding_loop:
     mov rdi, rbx
     call f
 
-    push r9
-
-    mov r9, rax
+    push rax
 
     mov rdi, rax
     mov rsi, print_int
@@ -173,17 +171,15 @@ adding_loop:
 
     mov rdi, empty_str
     call puts
-;in rdx now we have source list
-;in r9 now we have filtered list
-    mov rdi, rdx
+;in rbx now we have source list
+;on the stack now we have filtered list
+    mov rdi, rbx
     mov rsi, -1
     call list_head_delete
 
-    mov rdi, r9
+    pop rdi
     mov rsi, -1
     call list_head_delete
-
-    pop r9
 
     pop rbx
     xor rax, rax
