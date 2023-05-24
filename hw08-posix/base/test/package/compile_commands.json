@@ -1,0 +1,1123 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../src/common/clib-package.o",
+      "../../src/common/clib-package.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/src/common/clib-package.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/src/common/clib-package.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../src/common/clib-cache.o",
+      "../../src/common/clib-cache.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/src/common/clib-cache.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/src/common/clib-cache.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/asprintf/asprintf.o",
+      "../../deps/asprintf/asprintf.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/asprintf/asprintf.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/asprintf/asprintf.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/case/case.o",
+      "../../deps/case/case.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/case/case.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/case/case.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/commander/commander.o",
+      "../../deps/commander/commander.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/commander/commander.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/commander/commander.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/console-colors/console-colors.o",
+      "../../deps/console-colors/console-colors.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/console-colors/console-colors.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/console-colors/console-colors.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/copy/copy.o",
+      "../../deps/copy/copy.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/copy/copy.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/copy/copy.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/debug/debug.o",
+      "../../deps/debug/debug.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/debug/debug.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/debug/debug.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/fs/fs.o",
+      "../../deps/fs/fs.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/fs/fs.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/fs/fs.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-get-element-by-id/get-element-by-id.o",
+      "../../deps/gumbo-get-element-by-id/get-element-by-id.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-get-element-by-id/get-element-by-id.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-get-element-by-id/get-element-by-id.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-get-elements-by-tag-name/get-elements-by-tag-name.o",
+      "../../deps/gumbo-get-elements-by-tag-name/get-elements-by-tag-name.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-get-elements-by-tag-name/get-elements-by-tag-name.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-get-elements-by-tag-name/get-elements-by-tag-name.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/attribute.o",
+      "../../deps/gumbo-parser/attribute.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/attribute.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/attribute.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/char_ref.o",
+      "../../deps/gumbo-parser/char_ref.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/char_ref.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/char_ref.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/error.o",
+      "../../deps/gumbo-parser/error.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/error.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/error.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/parser.o",
+      "../../deps/gumbo-parser/parser.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/parser.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/parser.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/string_buffer.o",
+      "../../deps/gumbo-parser/string_buffer.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/string_buffer.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/string_buffer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/string_piece.o",
+      "../../deps/gumbo-parser/string_piece.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/string_piece.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/string_piece.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/tag.o",
+      "../../deps/gumbo-parser/tag.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/tag.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/tag.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/tokenizer.o",
+      "../../deps/gumbo-parser/tokenizer.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/tokenizer.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/tokenizer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/utf8.o",
+      "../../deps/gumbo-parser/utf8.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/utf8.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/utf8.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/util.o",
+      "../../deps/gumbo-parser/util.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/util.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/util.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-parser/vector.o",
+      "../../deps/gumbo-parser/vector.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/vector.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-parser/vector.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/gumbo-text-content/gumbo-text-content.o",
+      "../../deps/gumbo-text-content/gumbo-text-content.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-text-content/gumbo-text-content.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/gumbo-text-content/gumbo-text-content.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/hash/hash.o",
+      "../../deps/hash/hash.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/hash/hash.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/hash/hash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/http-get/http-get.o",
+      "../../deps/http-get/http-get.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/http-get/http-get.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/http-get/http-get.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/list/list.o",
+      "../../deps/list/list.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/list/list.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/list/list.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/list/list_iterator.o",
+      "../../deps/list/list_iterator.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/list/list_iterator.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/list/list_iterator.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/list/list_node.o",
+      "../../deps/list/list_node.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/list/list_node.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/list/list_node.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/mkdirp/mkdirp.o",
+      "../../deps/mkdirp/mkdirp.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/mkdirp/mkdirp.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/mkdirp/mkdirp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/occurrences/occurrences.o",
+      "../../deps/occurrences/occurrences.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/occurrences/occurrences.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/occurrences/occurrences.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/parse-repo/parse-repo.o",
+      "../../deps/parse-repo/parse-repo.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/parse-repo/parse-repo.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/parse-repo/parse-repo.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/parson/parson.o",
+      "../../deps/parson/parson.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/parson/parson.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/parson/parson.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/path-join/path-join.o",
+      "../../deps/path-join/path-join.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/path-join/path-join.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/path-join/path-join.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/path-normalize/path-normalize.o",
+      "../../deps/path-normalize/path-normalize.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/path-normalize/path-normalize.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/path-normalize/path-normalize.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/rimraf/rimraf.o",
+      "../../deps/rimraf/rimraf.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/rimraf/rimraf.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/rimraf/rimraf.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/str-concat/str-concat.o",
+      "../../deps/str-concat/str-concat.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-concat/str-concat.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-concat/str-concat.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/strdup/strdup.o",
+      "../../deps/strdup/strdup.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/strdup/strdup.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/strdup/strdup.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/str-ends-with/str-ends-with.o",
+      "../../deps/str-ends-with/str-ends-with.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-ends-with/str-ends-with.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-ends-with/str-ends-with.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/str-flatten/str-flatten.o",
+      "../../deps/str-flatten/str-flatten.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-flatten/str-flatten.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-flatten/str-flatten.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/str-replace/str-replace.o",
+      "../../deps/str-replace/str-replace.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-replace/str-replace.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-replace/str-replace.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/str-starts-with/str-starts-with.o",
+      "../../deps/str-starts-with/str-starts-with.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-starts-with/str-starts-with.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/str-starts-with/str-starts-with.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/substr/substr.o",
+      "../../deps/substr/substr.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/substr/substr.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/substr/substr.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/tempdir/tempdir.o",
+      "../../deps/tempdir/tempdir.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/tempdir/tempdir.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/tempdir/tempdir.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/trim/trim.o",
+      "../../deps/trim/trim.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/trim/trim.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/trim/trim.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/which/which.o",
+      "../../deps/which/which.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/which/which.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/which/which.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/wiki-registry/wiki-registry.o",
+      "../../deps/wiki-registry/wiki-registry.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/wiki-registry/wiki-registry.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/wiki-registry/wiki-registry.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "../../deps/wildcardcmp/wildcardcmp.o",
+      "../../deps/wildcardcmp/wildcardcmp.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/deps/wildcardcmp/wildcardcmp.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/deps/wildcardcmp/wildcardcmp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-dependency-new.o",
+      "package-dependency-new.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-dependency-new.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-dependency-new.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-install.o",
+      "package-install.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-install.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-install.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-install-dependencies.o",
+      "package-install-dependencies.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-install-dependencies.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-install-dependencies.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-install-dev-dependencies.o",
+      "package-install-dev-dependencies.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-install-dev-dependencies.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-install-dev-dependencies.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-load-from-manifest.o",
+      "package-load-from-manifest.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-load-from-manifest.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-load-from-manifest.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-load-manifest-file.o",
+      "package-load-manifest-file.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-load-manifest-file.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-load-manifest-file.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-new.o",
+      "package-new.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-new.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-new.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-new-from-slug.o",
+      "package-new-from-slug.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-new-from-slug.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-new-from-slug.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-parse-author.o",
+      "package-parse-author.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-parse-author.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-parse-author.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-parse-name.o",
+      "package-parse-name.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-parse-name.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-parse-name.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-parse-version.o",
+      "package-parse-version.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-parse-version.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-parse-version.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-std=c99",
+      "-Wall",
+      "-I../../src/common",
+      "-I../../deps",
+      "-DHAVE_PTHREADS",
+      "-pthread",
+      "-g",
+      "-c",
+      "-o",
+      "package-url.o",
+      "package-url.c"
+    ],
+    "directory": "/home/slayer/projects/otus-c/hw08-posix/base/test/package",
+    "file": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-url.c",
+    "output": "/home/slayer/projects/otus-c/hw08-posix/base/test/package/package-url.o"
+  }
+]
