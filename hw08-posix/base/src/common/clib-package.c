@@ -55,7 +55,6 @@
 #endif
 
 static hash_t *visited_packages = 0;
-static int visited_packages_count = 0;
 
 #ifdef HAVE_PTHREADS
 typedef struct fetch_package_file_thread_data fetch_package_file_thread_data_t;
@@ -655,6 +654,8 @@ clib_package_new_from_slug_with_package_name(const char *slug, int verbose,
     if (retries-- <= 0) {
       goto error;
     } else {
+      http_get_free(res);
+      res = NULL;
 #ifdef HAVE_PTHREADS
       init_curl_share();
       _debug("GET %s", json_url);
@@ -1381,8 +1382,9 @@ int clib_package_install(clib_package_t *pkg, const char *dir, int verbose) {
 #ifdef HAVE_PTHREADS
     pthread_mutex_lock(&lock.mutex);
 #endif
-    hash_set(visited_packages, strdup(pkg->name), "t");
-    visited_packages_count++;
+    if (!hash_has(visited_packages, pkg->name)) {
+      hash_set(visited_packages, strdup(pkg->name), "t");
+    }
 #ifdef HAVE_PTHREADS
     pthread_mutex_unlock(&lock.mutex);
 #endif
@@ -1491,7 +1493,7 @@ download:
       while (--i >= 0) {
         fetch_package_file_thread_data_t *data = fetchs[i];
         int *status = 0;
-        pthread_join(data->thread, (void **)status);
+        pthread_join(data->thread, (void **)&status);
         free(data);
         fetchs[i] = NULL;
 
@@ -1521,7 +1523,7 @@ download:
     fetch_package_file_thread_data_t *data = fetchs[i];
     int *status = 0;
 
-    pthread_join(data->thread, (void **)status);
+    pthread_join(data->thread, (void **)&status);
 
     (void)pending--;
     free(data);
